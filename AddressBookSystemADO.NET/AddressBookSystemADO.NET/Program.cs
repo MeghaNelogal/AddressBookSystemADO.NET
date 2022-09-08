@@ -1,2 +1,14 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿namespace AddressBookSystemADO.NET
+{
+    class Program
+    {
+        public static void Main(string[] args)
+        {
+            Console.WriteLine(" Welcome to AddressBookSystem ADO.NET");
+            AddressBookManagement addressBookManagement = new AddressBookManagement();
+
+            //UC1
+            addressBookManagement.DataBaseConnection();
+        }
+    }
+}
