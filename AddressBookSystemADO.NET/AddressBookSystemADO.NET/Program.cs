@@ -9,6 +9,9 @@
 
             //UC1
             addressBookManagement.DataBaseConnection();
+
+            //UC2
+            addressBookManagement.GetAllContact();
         }
     }
 }
