@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -35,8 +36,9 @@ namespace AddressBookSystemADO.NET
             }
 
         }
+
         /*UC2:- Ability to create a Address Book Table with first and last names, 
-                address, city, state, zip, phone number and email as its attributes*/
+                 address, city, state, zip, phone number and email as its attributes*/
         public void GetAllContact()
         {
 
@@ -91,6 +93,81 @@ namespace AddressBookSystemADO.NET
                 connection.Close(); // Always ensuring the closing of the connection
             }
         }
+        //UC3:- Ability to insert new Contacts to Address Book
+        public bool AddDataToTable(AddressBookModel model)
+        {
+            try
+            {
+                using (connection) // Using the connection established
+                {
+                    SqlCommand command = new SqlCommand("dbo.AddressBookSystemProcedure", connection); // Implementing the stored procedure
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@FirstName", model.FirstName);
+                    command.Parameters.AddWithValue("@LastName", model.LastName);
+                    command.Parameters.AddWithValue("@Address", model.Address);
+                    command.Parameters.AddWithValue("@City", model.City);
+                    command.Parameters.AddWithValue("@State", model.State);
+                    command.Parameters.AddWithValue("@Zip", model.Zip);
+                    command.Parameters.AddWithValue("@PhoneNumber", model.PhoneNumber);
+                    command.Parameters.AddWithValue("@EmailID", model.EmailId);
+                    command.Parameters.AddWithValue("@addressBookType", model.AddressBookType);
+                    command.Parameters.AddWithValue("@addressBookName", model.AddressBookName);
+
+                    connection.Open();
+                    var result = command.ExecuteNonQuery();
+                    connection.Close();
+
+                    if (result != 0)  //Return the result of the transaction 
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        //UC4:Ability to edit existing contact person using their name
+        public bool EditContactUsingName(string Zip, string FirstName, string LastName)
+        {
+
+            try
+            {
+                using (connection)
+                {
+                    connection.Open();
+                    string query = @"update dbo.AddressBookSystem set Zip = @parameter1
+                    where FirstName = @parameter2 and LastName = @parameter3";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@parameter1", Zip);
+                    command.Parameters.AddWithValue("@parameter2", FirstName);
+                    command.Parameters.AddWithValue("@parameter3", LastName);
+                    var result = command.ExecuteNonQuery();
+                    connection.Close();
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
     }
 }
-    
